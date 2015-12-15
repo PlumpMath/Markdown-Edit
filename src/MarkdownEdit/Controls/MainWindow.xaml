@@ -26,19 +26,6 @@
     <converters:NumberFormatConverter x:Key="NumberFormatConverter" />
     <converters:BooleanToScrollBarVisibilityConverter x:Key="ScrollbarVisibilityConverter" />
 
-    <Style x:Key="StatusIndicatorStyle"
-           TargetType="TextBlock">
-      <Setter Property="Margin" Value="10 0 0 0" />
-      <Setter Property="Foreground" Value="{StaticResource GrayBrush10}" />
-      <Setter Property="VerticalAlignment" Value="Bottom" />
-      <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
-      <Style.Triggers>
-        <Trigger Property="IsEnabled" Value="False">
-          <Setter Property="Foreground" Value="{StaticResource GrayBrush3}" />
-        </Trigger>
-      </Style.Triggers>
-    </Style>
-
     <Style x:Key="CommandWindowButtonStyle"
             TargetType="Button"
             BasedOn="{StaticResource MetroBaseWindowButtonStyle}">
@@ -49,6 +36,59 @@
         </Trigger>
       </Style.Triggers>
     </Style>
+
+    <Style x:Key="SpellCheckToggleCommandWindowButtonStyle"
+            TargetType="Button"
+            BasedOn="{StaticResource CommandWindowButtonStyle}">
+      <Style.Triggers>
+        <!-- Order of triggers matters here -->
+        <DataTrigger Binding="{Binding Path=SpellCheck, ElementName=Editor}" Value="False">
+          <Setter Property="Foreground" Value="{StaticResource GrayBrush1}" />
+        </DataTrigger>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Foreground" Value="{StaticResource WhiteBrush}" />
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style x:Key="WordWrapToggleCommandWindowButtonStyle"
+            TargetType="Button"
+            BasedOn="{StaticResource CommandWindowButtonStyle}">
+      <Style.Triggers>
+        <!-- Order of triggers matters here -->
+        <DataTrigger Binding="{Binding Path=WordWrap, ElementName=Editor}" Value="False">
+          <Setter Property="Foreground" Value="{StaticResource GrayBrush1}" />
+        </DataTrigger>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Foreground" Value="{StaticResource WhiteBrush}" />
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style x:Key="NewVersionCommandWindoButtonStyle"
+           TargetType="Button"
+           BasedOn="{StaticResource CommandWindowButtonStyle}">
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding NewVersion}" Value="False">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style x:Key="AutoSaveToggleCommandWindowButtonStyle"
+            TargetType="Button"
+            BasedOn="{StaticResource CommandWindowButtonStyle}">
+      <Style.Triggers>
+        <!-- Order of triggers matters here -->
+        <DataTrigger Binding="{Binding Path=AutoSave, ElementName=Editor}" Value="False">
+          <Setter Property="Foreground" Value="{StaticResource GrayBrush1}" />
+        </DataTrigger>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Foreground" Value="{StaticResource WhiteBrush}" />
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
   </metrocontrols:MetroWindow.Resources>
 
   <metrocontrols:MetroWindow.RightWindowCommands>
@@ -60,46 +100,60 @@
                 ToolTip="{i18N:Localize tooltip-new-command}"
                 Command="New"
                 FontFamily="Segoe UI Symbol"
-                Style="{StaticResource CommandWindowButtonStyle}" />
+                Style="{StaticResource CommandWindowButtonStyle}" 
+                />
         <Button Content="&#xe1A5;"
                 ToolTip="{i18N:Localize tooltip-open-command}"
                 Command="Open"
                 FontFamily="Segoe UI Symbol"
-                Style="{StaticResource CommandWindowButtonStyle}" />
+                Style="{StaticResource CommandWindowButtonStyle}" 
+                />
         <Button Content="&#xe105;"
                 ToolTip="{i18N:Localize tooltip-save-command}"
                 Command="Save"
                 FontFamily="Segoe UI Symbol"
-                Style="{StaticResource CommandWindowButtonStyle}" />
+                Style="{StaticResource CommandWindowButtonStyle}" 
+                />
         <Button Content="&#xe28F;"
                 ToolTip="{i18N:Localize tooltip-save-as-command}"
                 Command="SaveAs"
                 FontFamily="Segoe UI Symbol"
-                Style="{StaticResource CommandWindowButtonStyle}" />
+                Style="{StaticResource CommandWindowButtonStyle}" 
+                />
         <Button Content="&#xe115;"
                 Margin="0 0 10 0"
                 ToolTip="{i18N:Localize tooltip-toggle-settings}"
-                Click="ToggleSettings"
+                Command="{x:Static controls:MainWindow.ToggleSettingsFlyoutCommand}"
                 FontFamily="Segoe UI Symbol"
-                Foreground="{StaticResource SemiTransparentWhiteBrush}" />
+                Foreground="{StaticResource SemiTransparentWhiteBrush}" 
+                />
         <TextBlock ToolTip="{i18N:Localize tooltip-word-count}"
-                   Foreground="{StaticResource SemiTransparentWhiteBrush}"
+                   Foreground="{StaticResource GrayBrush8}"
                    Text="{Binding Path=WordCount, ElementName=Preview, Converter={StaticResource NumberFormatConverter}}" />
-        <TextBlock Text="&#xfc;"
-                   ToolTip="{i18N:Localize tooltip-spell-check}"
-                   FontFamily="Wingdings"
-                   Style="{StaticResource StatusIndicatorStyle}"
-                   IsEnabled="{Binding Path=SpellCheck, ElementName=Editor}" />
-        <TextBlock Text="&#x21A9;"
-                   ToolTip="{i18N:Localize tooltip-word-wrap}"
-                   FontFamily="Segoe UI Symbol"
-                   Style="{StaticResource StatusIndicatorStyle}"
-                   IsEnabled="{Binding Path=WordWrap, ElementName=Editor}" />
-        <TextBlock Text="&#xe105;"
-                   ToolTip="{i18N:Localize tooltip-auto-save}"
-                   FontFamily="Segoe UI Symbol"
-                   Style="{StaticResource StatusIndicatorStyle}"
-                   IsEnabled="{Binding Path=AutoSave, ElementName=Editor}" />
+        <Button Content="&#xfc;"
+                Command="{x:Static controls:MainWindow.ToggleSpellCheckCommand}"
+                ToolTip="{i18N:Localize tooltip-spell-check}"
+                FontFamily="Wingdings"
+                Style="{StaticResource SpellCheckToggleCommandWindowButtonStyle}"
+                />
+        <Button Content="&#x21A9;"
+                Command="{x:Static controls:MainWindow.ToggleWordWrapCommand}"
+                ToolTip="{i18N:Localize tooltip-word-wrap}"
+                FontFamily="Segoe UI Symbol"
+                Style="{StaticResource WordWrapToggleCommandWindowButtonStyle}"
+                />
+        <Button Content="&#xe105;"
+                Command="{x:Static controls:MainWindow.ToggleAutoSaveCommand}"
+                ToolTip="{i18N:Localize tooltip-auto-save}"
+                FontFamily="Segoe UI Symbol"
+                Style="{StaticResource AutoSaveToggleCommandWindowButtonStyle}"
+                />
+        <Button Content="&#xE182;"
+                ToolTip="{i18N:Localize tooltip-new-version}"
+                Command="{x:Static controls:MainWindow.GotToMarkdownEditWebSiteCommand}"
+                FontFamily="Segoe UI Symbol"
+                Style="{StaticResource NewVersionCommandWindoButtonStyle}" 
+                />
       </StackPanel>
     </metrocontrols:WindowCommands>
   </metrocontrols:MetroWindow.RightWindowCommands>
@@ -146,8 +200,7 @@
                                  IsInputRedirectionEnabled="True"
                                  IsOutputRedirectionEnabled="True">
         <controls:Preview x:Name="Preview"
-                           Margin="{Binding EditorMargins}"
-                           MarkdownConverter="{Binding MarkdownConverter}" />
+                          Margin="{Binding EditorMargins}" />
       </interop:AirspaceDecorator>
     </UniformGrid>
   </Grid>
@@ -181,6 +234,8 @@
     <CommandBinding Command="{x:Static controls:MainWindow.SaveThemeCommand}" Executed="ExecuteSaveTheme" />
     <CommandBinding Command="{x:Static controls:MainWindow.ExportHtmlCommand}" Executed="ExecuteExportHtml" />
     <CommandBinding Command="{x:Static controls:MainWindow.ExportHtmlTemplateCommand}" Executed="ExecuteExportHtmlTemplate" />
+    <CommandBinding Command="{x:Static controls:MainWindow.SaveAsHtmlCommand}" Executed="ExecuteSaveAsHtml" />
+    <CommandBinding Command="{x:Static controls:MainWindow.SaveAsHtmlTemplateCommand}" Executed="ExecuteSaveAsHtmlTemplate" />
     <CommandBinding Command="{x:Static controls:MainWindow.ShowGotoLineDialogCommand}" Executed="ExecuteShowGotoLineDialog" />
     <CommandBinding Command="{x:Static controls:MainWindow.ScrollToLineCommand}" Executed="ExecuteScrollToLine" />
     <CommandBinding Command="{x:Static controls:MainWindow.ToggleAutoSaveCommand}" Executed="ExecuteToggleAutoSave" />
@@ -194,6 +249,10 @@
     <CommandBinding Command="{x:Static controls:MainWindow.InsertFileCommand}" Executed="ExecuteInsertFile" />
     <CommandBinding Command="{x:Static controls:MainWindow.IncreaseEditorMarginCommand}" Executed="ExecuteIncreaseEditorMargin" />
     <CommandBinding Command="{x:Static controls:MainWindow.DecreaseEditorMarginCommand}" Executed="ExecuteDecreaseEditorMargin" />
+    <CommandBinding Command="{x:Static controls:MainWindow.ToggleSettingsFlyoutCommand}" Executed="ExecuteToggleShowSettingsFlyout" />
+    <CommandBinding Command="Print" Executed="ExecutePrintHtml" />
+    <CommandBinding Command="{x:Static controls:MainWindow.InsertHyperlinkCommand}" Executed="ExecuteInsertHyperlinkCommand" />
+    <CommandBinding Command="{x:Static controls:MainWindow.GotToMarkdownEditWebSiteCommand}" Executed="ExecuteGotToMarkdownEditWebSite" />
   </Window.CommandBindings>
 
   <Window.InputBindings>
@@ -209,8 +268,14 @@
     <KeyBinding Command="{x:Static controls:MainWindow.InsertHeaderCommand}" Gesture="Ctrl+5" CommandParameter="5" />
     <KeyBinding Command="{x:Static controls:MainWindow.InsertHeaderCommand}" Gesture="Ctrl+6" CommandParameter="6" />
     <KeyBinding Command="IncreaseFontSize" Gesture="Ctrl+Plus" />
+    <KeyBinding Command="IncreaseFontSize" Gesture="Ctrl+Add" />
+    <KeyBinding Command="IncreaseFontSize" Gesture="Ctrl+OemPlus" />
     <KeyBinding Command="DecreaseFontSize" Gesture="Ctrl+Minus" />
+    <KeyBinding Command="DecreaseFontSize" Gesture="Ctrl+Subtract" />
+    <KeyBinding Command="DecreaseFontSize" Gesture="Ctrl+OemMinus" />
     <KeyBinding Command="{x:Static controls:MainWindow.RestoreFontSizeCommand}" Gesture="Ctrl+0" />
+    <KeyBinding Command="{x:Static controls:MainWindow.RestoreFontSizeCommand}" Gesture="Ctrl+D0" />
+    <KeyBinding Command="{x:Static controls:MainWindow.RestoreFontSizeCommand}" Gesture="Ctrl+NumPad0" />
     <KeyBinding Command="{x:Static controls:MainWindow.OpenUserSnippetsCommand}" Gesture="F6" />
     <KeyBinding Command="{x:Static controls:MainWindow.OpenUserDictionaryCommand}" Gesture="F7" />
     <KeyBinding Command="{x:Static controls:MainWindow.ToggleSpellCheckCommand}" Gesture="Ctrl+F7" />
@@ -222,6 +287,7 @@
     <KeyBinding Command="{x:Static controls:MainWindow.ShowThemeDialogCommand}" Gesture="Ctrl+T" />
     <KeyBinding Command="{x:Static controls:MainWindow.ExportHtmlCommand}" Gesture="Ctrl+E" />
     <KeyBinding Command="{x:Static controls:MainWindow.ExportHtmlTemplateCommand}" Gesture="Ctrl+Shift+E" />
+    <KeyBinding Command="{x:Static controls:MainWindow.SaveAsHtmlTemplateCommand}" Gesture="Alt+E" />
     <KeyBinding Command="{x:Static controls:MainWindow.ShowGotoLineDialogCommand}" Gesture="Ctrl+G" />
     <KeyBinding Command="{x:Static controls:MainWindow.ToggleAutoSaveCommand}" Gesture="Alt+S" />
     <KeyBinding Command="{x:Static controls:MainWindow.SelectPreviousHeaderCommand}" Gesture="Ctrl+U" />
@@ -230,5 +296,7 @@
     <KeyBinding Command="{x:Static controls:MainWindow.InsertFileCommand}" Gesture="Ctrl+Shift+O" />
     <KeyBinding Command="{x:Static controls:MainWindow.IncreaseEditorMarginCommand}" Gesture="Alt+Plus" />
     <KeyBinding Command="{x:Static controls:MainWindow.DecreaseEditorMarginCommand}" Gesture="Alt+Minus" />
+    <KeyBinding Command="{x:Static controls:MainWindow.ToggleSettingsFlyoutCommand}" Gesture="Ctrl+Comma" />
+    <KeyBinding Command="Print" Gesture="Ctrl+P" />
   </Window.InputBindings>
 </metrocontrols:MetroWindow>
